@@ -1,7 +1,8 @@
-import { DownloadOutlined, PoweroffOutlined, SearchOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Col, Divider, Dropdown, Layout, Menu, MenuProps, Radio, Row, Space, Tooltip } from "antd";
+import { DownloadOutlined, HomeOutlined, LaptopOutlined, NotificationOutlined, PoweroffOutlined, SearchOutlined, UploadOutlined, UserOutlined } from "@ant-design/icons";
+import { Affix, Breadcrumb, Button, Card, Col, Divider, Dropdown, Layout, Menu, MenuProps, Popconfirm, Radio, Row, Space, Tooltip, Upload } from "antd";
 import { useState } from "react";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
+import React from "react";
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -44,6 +45,60 @@ export default function AntDesignHome() {
                 {
                     key: '3',
                     label: '3rd item'
+                }
+            ]}
+        />
+    )
+
+    const items1: MenuProps['items'] = ['1', '2', '3'].map(key => ({
+        key,
+        label: `nav ${key}`
+    }))
+
+    const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOutlined].map((icon, index) => {
+        const key = String(index + 1);
+
+        return {
+            key: `sub${key}`,
+            icon: React.createElement(icon),
+            label: `subnav ${key}`,
+
+            children: new Array(4).fill(null).map((_, j) => {
+                const subKey = index * 4 + j + 1;
+                return {
+                    key: subKey,
+                    label: `option${subKey}`
+                }
+            })
+        }
+    })
+
+    const breadcrumbDropdownMenu = (
+        <Menu
+            items={[
+                {
+                    key: '1',
+                    label: (
+                        <a target="_blank" rel="noopener noreferrer" href="">
+                            General
+                        </a>
+                    )
+                },
+                {
+                    key: '2',
+                    label: (
+                        <a target="_blank" rel="noopener noreferrer" href="">
+                            Layout
+                        </a>
+                    )
+                },
+                {
+                    key: '3',
+                    label: (
+                        <a target="_blank" rel="noopener noreferrer" href="">
+                            Navigation
+                        </a>
+                    )
                 }
             ]}
         />
@@ -276,7 +331,8 @@ export default function AntDesignHome() {
                                 key,
                                 label: `nav ${key}`
                             }
-                        })} />
+                        })}
+                    />
                 </Header>
                 <Content style={{ padding: '0 50px' }}>
                     <Breadcrumb style={{ margin: '16px 0' }}>
@@ -290,6 +346,95 @@ export default function AntDesignHome() {
                     Ant Design &copy; Created by Ant UED
                 </Footer>
             </Layout>
+            <Layout>
+                <Header>
+                    <div style={{
+                        float: "left",
+                        width: "120px",
+                        height: "31px",
+                        margin: "16px 24px 16px 0",
+                        background: "rgba(255, 255, 255, 0.3)"
+                    }} />
+                    <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
+                </Header>
+                <Layout>
+                    <Sider width={200} style={{ background: "#FFFFFF" }}>
+                        <Menu
+                            mode="inline"
+                            defaultSelectedKeys={['1']}
+                            defaultOpenKeys={['sub1']}
+                            style={{ height: "100%", borderRight: 0 }}
+                            items={items2}
+                        />
+                    </Sider>
+                    <Layout style={{ padding: '0 24px 24px' }}>
+                        <Breadcrumb style={{ margin: '16px 0' }}>
+                            <Breadcrumb.Item>Home</Breadcrumb.Item>
+                            <Breadcrumb.Item>List</Breadcrumb.Item>
+                            <Breadcrumb.Item>App</Breadcrumb.Item>
+                        </Breadcrumb>
+                        <Content style={{ background: '#FFFFFF', padding: 24, margin: 0, minHeight: 280 }}>
+                            Content
+                        </Content>
+                    </Layout>
+                </Layout>
+            </Layout>
+            <Divider>Space</Divider>
+            <Space>
+                Space
+                <Upload>
+                    <Button>
+                        <UploadOutlined />Click to Upload
+                    </Button>
+                </Upload>
+                <Popconfirm title="Are you sure delete this task?" okText="Yes" cancelText="No">
+                    <Button>Confirm</Button>
+                </Popconfirm>
+            </Space>
+            <Divider>Card</Divider>
+            <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+                <Card title="Card">
+                    <p>Card content</p>
+                    <p>Card content</p>
+                </Card>
+                <Card title="Card" size="small">
+                    <p>Card content</p>
+                    <p>Card content</p>
+                </Card>
+                <Card title="Card" size="small">
+                    <p>Card content</p>
+                    <p>Card content</p>
+                </Card>
+            </Space>
+            <Divider>Affix</Divider>
+            <Affix offsetTop={0}>
+                <Button type="primary">Affix Top</Button>
+            </Affix>
+            <div style={{ height: "100vh", background: "#CCCCCC" }}></div>
+            <div style={{ height: "100vh", background: "#DDDDDD" }}></div>
+            <Divider>Breadcrumb</Divider>
+            <Breadcrumb separator=">">
+                <Breadcrumb.Item href="">
+                    <HomeOutlined />
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href="">
+                    <UserOutlined />
+                    <span>Application List</span>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                    Application
+                </Breadcrumb.Item>
+            </Breadcrumb>
+            <Breadcrumb>
+                <Breadcrumb.Item>Ant Design</Breadcrumb.Item>
+                <Breadcrumb.Item>
+                    <a href="">Component</a>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item overlay={breadcrumbDropdownMenu}>
+                    <a href="">General</a>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>Button</Breadcrumb.Item>
+            </Breadcrumb>
         </div>
     )
 }

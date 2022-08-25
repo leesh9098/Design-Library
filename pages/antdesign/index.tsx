@@ -1,20 +1,22 @@
-import { DownloadOutlined, HomeOutlined, LaptopOutlined, NotificationOutlined, PoweroffOutlined, SearchOutlined, UploadOutlined, UserOutlined } from "@ant-design/icons";
-import { Affix, Breadcrumb, Button, Card, Col, Divider, Dropdown, Layout, Menu, MenuProps, Popconfirm, Radio, Row, Space, Tooltip, Upload } from "antd";
+import { DownloadOutlined, DownOutlined, HomeOutlined, LaptopOutlined, NotificationOutlined, PoweroffOutlined, SearchOutlined, SmileOutlined, UploadOutlined, UserOutlined } from "@ant-design/icons";
+import { Affix, Breadcrumb, Button, Card, Col, Divider, Dropdown, Layout, Menu, MenuProps, message, Popconfirm, Radio, Row, Space, Tooltip, Upload } from "antd";
 import { useState } from "react";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
 import React from "react";
+import Link from "next/link";
 
 const { Header, Footer, Sider, Content } = Layout;
 
 export default function AntDesignHome() {
     const [buttonSize, setButtonSize] = useState<SizeType>('large');
     const [loading, setLoading] = useState<boolean[]>([]);
+    const [visible, setVisible] = useState(false);
 
     const enterLoading = (index: number) => {
         setLoading(prevLoading => {
             const newLoading = [...prevLoading];
             newLoading[index] = true;
-            return newLoading
+            return newLoading;
         })
 
         setTimeout(() => {
@@ -99,6 +101,148 @@ export default function AntDesignHome() {
                             Navigation
                         </a>
                     )
+                }
+            ]}
+        />
+    )
+
+    const routes = [
+        {
+            path: 'index',
+            breadcrumbName: 'home'
+        },
+        {
+            path: 'first',
+            breadcrumbName: 'first',
+            children: [
+                {
+                    path: '/general',
+                    breadcrumbName: 'General'
+                },
+                {
+                    path: '/layout',
+                    breadcrumbName: 'Layout'
+                },
+                {
+                    path: '/navigation',
+                    breadcrumbName: 'Navigation'
+                }
+            ]
+        },
+        {
+            path: 'second',
+            breadcrumbName: 'second'
+        }
+    ]
+
+    function itemRender(route: any, params: any, routes: any, paths: any) {
+        const last = routes.indexOf(route) === routes.length - 1;
+        return last ? (
+            <span>{route.breadcrumbName}</span>
+        )
+        :
+        (
+            <Link href={paths.join('/')}>{route.breadcrumbName}</Link>
+        )
+    }
+
+    const dropdown1 = (
+        <Menu
+            items={[
+                {
+                    key: '1',
+                    label: (
+                        <a target="_blank" rel="noopener noreferrer" href="">
+                            1st menu item
+                        </a>
+                    )
+                },
+                {
+                    key: '2',
+                    label: (
+                        <a target="_blank" rel="noopener noreferrer" href="">
+                            2nd menu item (disabled)
+                        </a>
+                    ),
+                    icon: <SmileOutlined />,
+                    disabled: true
+                },
+                {
+                    key: '3',
+                    label: (
+                        <a target="_blank" rel="noopener noreferrer" href="">
+                            3rd menu item (disabled)
+                        </a>
+                    ),
+                    disabled: true
+                },
+                {
+                    key: '4',
+                    danger: true,
+                    label: 'a danger item'
+                }
+            ]}
+        />
+    )
+
+    const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        message.info('Click on left button');
+        console.log('click left button', e);
+    };
+
+    const handleMenuClick: MenuProps['onClick'] = e => {
+        message.info('Click on menu item');
+        console.log('click', e);
+    };
+
+    const dropdownButtonMenu = (
+        <Menu
+            onClick={handleMenuClick}
+            items={[
+                {
+                    label: '1st menu item',
+                    key: '1',
+                    icon: <UserOutlined />
+                },
+                {
+                    label: '2nd menu item',
+                    key: '2',
+                    icon: <UserOutlined />
+                },
+                {
+                    label: '3rd menu item',
+                    key: '3',
+                    icon: <UserOutlined />
+                }
+            ]}
+        />
+    )
+
+    const handleMenuClickVisible: MenuProps['onClick'] = e => {
+        if (e.key === '3') {
+            setVisible(false);
+        }
+    }
+
+    const handleVisibleChange = (flag: boolean) => {
+        setVisible(flag)
+    }
+
+    const dropdownVisibleMenu = (
+        <Menu
+            onClick={handleMenuClickVisible}
+            items={[
+                {
+                    label: 'Clicking me will not close the menu.',
+                    key: '1'
+                },
+                {
+                    label: 'Clicking me will not close the menu also.',
+                    key: '2'
+                },
+                {
+                    label: 'Clicking me will close the menu.',
+                    key: '3'
                 }
             ]}
         />
@@ -410,7 +554,6 @@ export default function AntDesignHome() {
             <Affix offsetTop={0}>
                 <Button type="primary">Affix Top</Button>
             </Affix>
-            <div style={{ height: "100vh", background: "#CCCCCC" }}></div>
             <div style={{ height: "100vh", background: "#DDDDDD" }}></div>
             <Divider>Breadcrumb</Divider>
             <Breadcrumb separator=">">
@@ -435,6 +578,88 @@ export default function AntDesignHome() {
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>Button</Breadcrumb.Item>
             </Breadcrumb>
+            <Breadcrumb itemRender={itemRender} routes={routes} />
+            <Divider>Dropdown</Divider>
+            <Dropdown overlay={dropdown1}>
+                <a onClick={e => e.preventDefault()}>
+                    <Space>
+                        Hover me
+                        <DownOutlined />
+                    </Space>
+                </a>
+            </Dropdown>
+            <Space direction="vertical">
+                <Space wrap>
+                    <Dropdown overlay={menu} placement="bottomLeft">
+                        <Button>bottomLeft</Button>
+                    </Dropdown>
+                    <Dropdown overlay={menu} placement="bottom">
+                        <Button>bottom</Button>
+                    </Dropdown>
+                    <Dropdown overlay={menu} placement="bottomRight">
+                        <Button>bottomRight</Button>
+                    </Dropdown>
+                </Space>
+                <Space wrap>
+                    <Dropdown overlay={menu} placement="topLeft" arrow>
+                        <Button>topLeft & arrow</Button>
+                    </Dropdown>
+                    <Dropdown overlay={menu} placement="top" arrow>
+                        <Button>top & arrow</Button>
+                    </Dropdown>
+                    <Dropdown overlay={menu} placement="topRight" arrow={{ pointAtCenter: true }}>
+                        <Button>topRight & arrow</Button>
+                    </Dropdown>
+                </Space>
+            </Space>
+            <Dropdown overlay={menu} trigger={['click']}>
+                <a onClick={e => e.preventDefault()}>
+                    <Space>
+                        Click me
+                        <DownOutlined />
+                    </Space>
+                </a>
+            </Dropdown>
+            <Space wrap>
+                <Dropdown.Button onClick={handleButtonClick} overlay={menu}>
+                    Dropdown
+                </Dropdown.Button>
+                <Dropdown.Button overlay={menu} placement="bottom" icon={<UserOutlined />}>
+                    Dropdown
+                </Dropdown.Button>
+                <Dropdown.Button onClick={handleButtonClick} overlay={menu} disabled>
+                    Dropdown
+                </Dropdown.Button>
+                <Dropdown.Button overlay={menu} buttonsRender={([leftButton, rightButton]) => [
+                    <Tooltip title="tooltip" key="leftButton">
+                        {leftButton}
+                    </Tooltip>,
+                    React.cloneElement(rightButton as React.ReactElement<any, string>, { loading: true })
+                ]}>
+                    with Tooltip
+                </Dropdown.Button>
+                <Dropdown overlay={dropdownButtonMenu}>
+                    <Button>
+                        <Space>
+                            Button
+                            <DownOutlined />
+                        </Space>
+                    </Button>
+                </Dropdown>
+            </Space>
+            <Dropdown overlay={dropdownVisibleMenu} onVisibleChange={handleVisibleChange} visible={visible}>
+                <a onClick={e => e.preventDefault()}>
+                    <Space>
+                        Hover me
+                        <DownOutlined />
+                    </Space>
+                </a>
+            </Dropdown>
+            <Dropdown overlay={menu} trigger={['contextMenu']}>
+                <div style={{ textAlign: 'center', height: 200, lineHeight: '200px' }}>
+                    Right Click on here
+                </div>
+            </Dropdown>
         </div>
     )
 }
